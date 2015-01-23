@@ -76,6 +76,8 @@ func NewVersion(release, preRelease, postRelease VersionSegment) (Version, error
 	return version, nil
 }
 
+func (v Version) String() string { return v.AsString() }
+
 func (v Version) AsString() string {
 	result := v.Release.AsString()
 
