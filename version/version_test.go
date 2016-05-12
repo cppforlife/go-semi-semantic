@@ -70,6 +70,11 @@ var _ = Describe("NewVersionFromString", func() {
 		_, err = NewVersionFromString("can\"t do it cap\"n")
 		Expect(err).To(HaveOccurred())
 	})
+
+	It("raises an ArgumentError if no digit in release segments", func() {
+		_, err := NewVersionFromString("alpha-1")
+		Expect(err).To(HaveOccurred())
+	})
 })
 
 var _ = Describe("Version", func() {
