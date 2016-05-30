@@ -91,6 +91,67 @@ var _ = Describe("NewVersionSegment", func() {
 })
 
 var _ = Describe("VersionSegment", func() {
+	Describe("Increment", func() {
+		It("increases the least significant component by default", func() {
+			components := []VerSegComp{VerSegCompInt{1}}
+			verSeg, err := MustNewVersionSegment(components).Increment()
+			Expect(err).ToNot(HaveOccurred())
+			Expect(verSeg.AsString()).To(Equal("2"))
+
+			components = []VerSegComp{VerSegCompInt{1}, VerSegCompInt{1}, VerSegCompInt{1}, VerSegCompInt{1}}
+			verSeg, err = MustNewVersionSegment(components).Increment()
+			Expect(err).ToNot(HaveOccurred())
+			Expect(verSeg.AsString()).To(Equal("1.1.1.2"))
+
+			components = []VerSegComp{VerSegCompInt{1}, VerSegCompStr{"a"}, VerSegCompInt{0}, VerSegCompInt{0}}
+			verSeg, err = MustNewVersionSegment(components).Increment()
+			Expect(err).ToNot(HaveOccurred())
+			Expect(verSeg.AsString()).To(Equal("1.a.0.1"))
+		})
+
+		It("does not affect original version segment", func() {
+			components := []VerSegComp{VerSegCompInt{1}}
+			origVerSeg := MustNewVersionSegment(components)
+			verSeg, err := origVerSeg.Increment()
+			Expect(err).ToNot(HaveOccurred())
+			Expect(verSeg.AsString()).To(Equal("2"))
+			Expect(origVerSeg.AsString()).To(Equal("1"))
+
+			components = []VerSegComp{VerSegCompInt{1}, VerSegCompInt{1}, VerSegCompInt{1}, VerSegCompInt{1}}
+			origVerSeg = MustNewVersionSegment(components)
+			verSeg, err = origVerSeg.Increment()
+			Expect(err).ToNot(HaveOccurred())
+			Expect(verSeg.AsString()).To(Equal("1.1.1.2"))
+			Expect(origVerSeg.AsString()).To(Equal("1.1.1.1"))
+		})
+
+		It("raises an error if last index is not an integer", func() {
+			components := []VerSegComp{VerSegCompStr{"a"}}
+			_, err := MustNewVersionSegment(components).Increment()
+			Expect(err).To(HaveOccurred())
+
+			components = []VerSegComp{VerSegCompInt{1}, VerSegCompInt{1}, VerSegCompInt{1}, VerSegCompStr{"a"}}
+			_, err = MustNewVersionSegment(components).Increment()
+			Expect(err).To(HaveOccurred())
+
+			components = []VerSegComp{VerSegCompStr{"-1"}, VerSegCompStr{"a"}}
+			_, err = MustNewVersionSegment(components).Increment()
+			Expect(err).To(HaveOccurred())
+		})
+
+		// does not currently support increment at specific position
+		// github.com/pivotal-cf-experimental/semi_semantic/blob/master/spec/semi_semantic/version_segment_spec.rb#L88
+	})
+
+	Describe("Copy", func() {
+		It("does not affect original version segment", func() {
+			origVerSeg := MustNewVersionSegmentFromString("1.1")
+			newVerSeg := origVerSeg.Copy()
+			newVerSeg.Components = append(newVerSeg.Components, VerSegCompInt{1})
+			Expect(origVerSeg.AsString()).To(Equal("1.1"))
+		})
+	})
+
 	Describe("AsString", func() {
 		It("joins the version clusters with separators", func() {
 			components := []VerSegComp{VerSegCompInt{1}}

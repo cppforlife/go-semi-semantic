@@ -76,6 +76,15 @@ func NewVersion(release, preRelease, postRelease VersionSegment) (Version, error
 	return version, nil
 }
 
+func (v Version) IncrementRelease() (Version, error) {
+	incRelease, err := v.Release.Increment()
+	if err != nil {
+		return Version{}, err
+	}
+
+	return NewVersion(incRelease, v.PreRelease.Copy(), v.PostRelease.Copy())
+}
+
 func (v Version) String() string { return v.AsString() }
 
 func (v Version) AsString() string {
