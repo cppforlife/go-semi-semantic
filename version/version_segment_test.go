@@ -163,6 +163,12 @@ var _ = Describe("VersionSegment", func() {
 		})
 	})
 
+	Describe("String", func() {
+		It("returns friendly value", func() {
+			Expect(MustNewVersionSegmentFromString("1.a").String()).To(Equal("1.a"))
+		})
+	})
+
 	Describe("AsString", func() {
 		It("joins the version clusters with separators", func() {
 			components := []VerSegComp{VerSegCompInt{1}}

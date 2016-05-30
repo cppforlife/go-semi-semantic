@@ -96,6 +96,8 @@ func (s VersionSegment) Copy() VersionSegment {
 
 func (s VersionSegment) Empty() bool { return len(s.Components) == 0 }
 
+func (s VersionSegment) String() string { return s.AsString() }
+
 func (s VersionSegment) AsString() string {
 	result := ""
 
