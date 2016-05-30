@@ -129,25 +129,25 @@ var _ = Describe("Version", func() {
 	})
 
 	Describe("IncrementRelease", func() {
-		It("increases release keeping pre and post releases", func() {
+		It("increases release and does not keep pre and post releases", func() {
 			ver, err := MustNewVersionFromString("1").IncrementRelease()
 			Expect(err).ToNot(HaveOccurred())
 			Expect(ver.AsString()).To(Equal("2"))
 
 			ver, err = MustNewVersionFromString("1.1.1+1-1").IncrementRelease()
 			Expect(err).ToNot(HaveOccurred())
-			Expect(ver.AsString()).To(Equal("1.1.2+1-1"))
+			Expect(ver.AsString()).To(Equal("1.1.2"))
 
 			ver, err = MustNewVersionFromString("1.a.0.1-1").IncrementRelease()
 			Expect(err).ToNot(HaveOccurred())
-			Expect(ver.AsString()).To(Equal("1.a.0.2-1"))
+			Expect(ver.AsString()).To(Equal("1.a.0.2"))
 		})
 
 		It("does not affect original version", func() {
 			origVer := MustNewVersionFromString("1.1.1-1+1")
 			newVer, err := origVer.IncrementRelease()
 			Expect(err).ToNot(HaveOccurred())
-			Expect(newVer.AsString()).To(Equal("1.1.2-1+1"))
+			Expect(newVer.AsString()).To(Equal("1.1.2"))
 			Expect(origVer.AsString()).To(Equal("1.1.1-1+1"))
 		})
 
@@ -214,6 +214,12 @@ var _ = Describe("Version", func() {
 		It("returns false when version is not empty", func() {
 			Expect(MustNewVersionFromString("1").Empty()).To(BeFalse())
 			Expect(MustNewVersionFromString("1-1+1").Empty()).To(BeFalse())
+		})
+	})
+
+	Describe("String", func() {
+		It("returns friendly value", func() {
+			Expect(MustNewVersionSegmentFromString("1.1.1.1").String()).To(Equal("1.1.1.1"))
 		})
 	})
 

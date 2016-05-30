@@ -91,7 +91,7 @@ func (v Version) IncrementRelease() (Version, error) {
 		return Version{}, err
 	}
 
-	return NewVersion(incRelease, v.PreRelease.Copy(), v.PostRelease.Copy())
+	return NewVersion(incRelease, VersionSegment{}, VersionSegment{})
 }
 
 func (v Version) IncrementPostRelease(defaultPostRelease VersionSegment) (Version, error) {
