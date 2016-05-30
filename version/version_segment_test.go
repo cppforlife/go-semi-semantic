@@ -7,6 +7,17 @@ import (
 	. "github.com/cppforlife/go-semi-semantic/version"
 )
 
+var _ = Describe("MustNewVersionSegmentFromString", func() {
+	It("parses valid version segment successfully", func() {
+		verSeg := MustNewVersionSegmentFromString("dev.0")
+		Expect(verSeg.AsString()).To(Equal("dev.0"))
+	})
+
+	It("panics on invalid version segment", func() {
+		Expect(func() { MustNewVersionSegmentFromString("") }).To(Panic())
+	})
+})
+
 var _ = Describe("NewVersionSegmentFromString", func() {
 	It("handles one or more non-negative numerical components", func() {
 		components := []VerSegComp{VerSegCompInt{1}}

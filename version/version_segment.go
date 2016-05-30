@@ -17,6 +17,15 @@ type VersionSegment struct {
 	Components []VerSegComp
 }
 
+func MustNewVersionSegmentFromString(v string) VersionSegment {
+	verSeg, err := NewVersionSegmentFromString(v)
+	if err != nil {
+		panic(fmt.Sprintf("Invalid version segment '%s': %s", v, err))
+	}
+
+	return verSeg
+}
+
 func NewVersionSegmentFromString(v string) (VersionSegment, error) {
 	pieces := strings.Split(v, ".")
 

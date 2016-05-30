@@ -158,35 +158,50 @@ var _ = Describe("Version", func() {
 	})
 
 	Describe("IncrementPostRelease", func() {
-		It("increases post release keeping release and pre releases", func() {
-			ver, err := MustNewVersionFromString("1.1+100").IncrementPostRelease()
+		def := MustNewVersionSegmentFromString("0")
+
+		It("increases post release keeping release and pre releases (does not use default)", func() {
+			ver, err := MustNewVersionFromString("1.1+100").IncrementPostRelease(def)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(ver.AsString()).To(Equal("1.1+101"))
 
-			ver, err = MustNewVersionFromString("1.1.1-1+1").IncrementPostRelease()
+			ver, err = MustNewVersionFromString("1.1.1-1+1").IncrementPostRelease(def)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(ver.AsString()).To(Equal("1.1.1-1+2"))
 
-			ver, err = MustNewVersionFromString("1.a.0.1-1+1.b.10").IncrementPostRelease()
+			ver, err = MustNewVersionFromString("1.a.0.1-1+1.b.10").IncrementPostRelease(def)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(ver.AsString()).To(Equal("1.a.0.1-1+1.b.11"))
 		})
 
+		It("uses default when post release is not present", func() {
+			def := MustNewVersionSegmentFromString("dev.0")
+
+			ver, err := MustNewVersionFromString("1.1").IncrementPostRelease(def)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(ver.AsString()).To(Equal("1.1+dev.0"))
+
+			ver, err = MustNewVersionFromString("1.1.1-1").IncrementPostRelease(def)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(ver.AsString()).To(Equal("1.1.1-1+dev.0"))
+		})
+
 		It("does not affect original version", func() {
 			origVer := MustNewVersionFromString("1.1.1-1+1")
-			newVer, err := origVer.IncrementPostRelease()
+			newVer, err := origVer.IncrementPostRelease(def)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(newVer.AsString()).To(Equal("1.1.1-1+2"))
 			Expect(origVer.AsString()).To(Equal("1.1.1-1+1"))
 		})
 
-		It("raises an error if there is no post release", func() {
-			_, err := MustNewVersionFromString("1.1").IncrementPostRelease()
+		It("raises an error if default post release is empty", func() {
+			_, err := MustNewVersionFromString("1.1+a").IncrementPostRelease(VersionSegment{})
 			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(Equal("Expected default post relase to be non-empty"))
 		})
 
 		It("raises an error if release cannot be incremented", func() {
-			_, err := MustNewVersionFromString("1.1+a").IncrementPostRelease()
+			_, err := MustNewVersionFromString("1.1+a").IncrementPostRelease(def)
 			Expect(err).To(HaveOccurred())
 		})
 	})

@@ -94,13 +94,24 @@ func (v Version) IncrementRelease() (Version, error) {
 	return NewVersion(incRelease, v.PreRelease.Copy(), v.PostRelease.Copy())
 }
 
-func (v Version) IncrementPostRelease() (Version, error) {
-	incPostRelease, err := v.PostRelease.Increment()
-	if err != nil {
-		return Version{}, err
+func (v Version) IncrementPostRelease(defaultPostRelease VersionSegment) (Version, error) {
+	var newPostRelease VersionSegment
+	var err error
+
+	if defaultPostRelease.Empty() {
+		return Version{}, errors.New("Expected default post relase to be non-empty")
 	}
 
-	return NewVersion(v.Release.Copy(), v.PreRelease.Copy(), incPostRelease)
+	if v.PostRelease.Empty() {
+		newPostRelease = defaultPostRelease.Copy()
+	} else {
+		newPostRelease, err = v.PostRelease.Increment()
+		if err != nil {
+			return Version{}, err
+		}
+	}
+
+	return NewVersion(v.Release.Copy(), v.PreRelease.Copy(), newPostRelease)
 }
 
 func (v Version) String() string { return v.AsString() }

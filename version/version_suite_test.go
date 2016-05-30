@@ -24,15 +24,6 @@ func MustNewVersion(release, preRelease, postRelease VersionSegment) Version {
 	return ver
 }
 
-func MustNewVersionSegmentFromString(v string) VersionSegment {
-	verSeg, err := NewVersionSegmentFromString(v)
-	if err != nil {
-		panic(fmt.Sprintf("Invalid version segment '%s': %s", v, err))
-	}
-
-	return verSeg
-}
-
 func MustNewVersionSegment(components []VerSegComp) VersionSegment {
 	verSeg, err := NewVersionSegment(components)
 	if err != nil {
