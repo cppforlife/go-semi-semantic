@@ -157,6 +157,40 @@ var _ = Describe("Version", func() {
 		})
 	})
 
+	Describe("IncrementPostRelease", func() {
+		It("increases post release keeping release and pre releases", func() {
+			ver, err := MustNewVersionFromString("1.1+100").IncrementPostRelease()
+			Expect(err).ToNot(HaveOccurred())
+			Expect(ver.AsString()).To(Equal("1.1+101"))
+
+			ver, err = MustNewVersionFromString("1.1.1-1+1").IncrementPostRelease()
+			Expect(err).ToNot(HaveOccurred())
+			Expect(ver.AsString()).To(Equal("1.1.1-1+2"))
+
+			ver, err = MustNewVersionFromString("1.a.0.1-1+1.b.10").IncrementPostRelease()
+			Expect(err).ToNot(HaveOccurred())
+			Expect(ver.AsString()).To(Equal("1.a.0.1-1+1.b.11"))
+		})
+
+		It("does not affect original version", func() {
+			origVer := MustNewVersionFromString("1.1.1-1+1")
+			newVer, err := origVer.IncrementPostRelease()
+			Expect(err).ToNot(HaveOccurred())
+			Expect(newVer.AsString()).To(Equal("1.1.1-1+2"))
+			Expect(origVer.AsString()).To(Equal("1.1.1-1+1"))
+		})
+
+		It("raises an error if there is no post release", func() {
+			_, err := MustNewVersionFromString("1.1").IncrementPostRelease()
+			Expect(err).To(HaveOccurred())
+		})
+
+		It("raises an error if release cannot be incremented", func() {
+			_, err := MustNewVersionFromString("1.1+a").IncrementPostRelease()
+			Expect(err).To(HaveOccurred())
+		})
+	})
+
 	Describe("AsString", func() {
 		It("joins the version clusters with separators", func() {
 			release := MustNewVersionSegmentFromString("1.1.1.1")

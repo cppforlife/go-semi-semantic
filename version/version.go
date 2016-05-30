@@ -94,6 +94,15 @@ func (v Version) IncrementRelease() (Version, error) {
 	return NewVersion(incRelease, v.PreRelease.Copy(), v.PostRelease.Copy())
 }
 
+func (v Version) IncrementPostRelease() (Version, error) {
+	incPostRelease, err := v.PostRelease.Increment()
+	if err != nil {
+		return Version{}, err
+	}
+
+	return NewVersion(v.Release.Copy(), v.PreRelease.Copy(), incPostRelease)
+}
+
 func (v Version) String() string { return v.AsString() }
 
 func (v Version) AsString() string {
