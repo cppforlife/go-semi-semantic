@@ -15,15 +15,6 @@ func TestSettings(t *testing.T) {
 	RunSpecs(t, "Version Suite")
 }
 
-func MustNewVersionFromString(v string) Version {
-	ver, err := NewVersionFromString(v)
-	if err != nil {
-		panic(fmt.Sprintf("Invalid version '%s': %s", v, err))
-	}
-
-	return ver
-}
-
 func MustNewVersion(release, preRelease, postRelease VersionSegment) Version {
 	ver, err := NewVersion(release, preRelease, postRelease)
 	if err != nil {

@@ -20,6 +20,15 @@ type Version struct {
 	Segments []VersionSegment
 }
 
+func MustNewVersionFromString(v string) Version {
+	ver, err := NewVersionFromString(v)
+	if err != nil {
+		panic(fmt.Sprintf("Invalid version '%s': %s", v, err))
+	}
+
+	return ver
+}
+
 func NewVersionFromString(v string) (Version, error) {
 	var err error
 

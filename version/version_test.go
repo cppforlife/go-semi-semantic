@@ -7,6 +7,17 @@ import (
 	. "github.com/cppforlife/go-semi-semantic/version"
 )
 
+var _ = Describe("MustNewVersionFromString", func() {
+	It("parses valid version successfully", func() {
+		ver := MustNewVersionFromString("1.0.a")
+		Expect(ver.AsString()).To(Equal("1.0.a"))
+	})
+
+	It("panics on invalid version", func() {
+		Expect(func() { MustNewVersionFromString("-1") }).To(Panic())
+	})
+})
+
 var _ = Describe("NewVersionFromString", func() {
 	It("parses up to 3 segments", func() {
 		segmentA := MustNewVersionSegmentFromString("1.0.a")
