@@ -114,6 +114,8 @@ func (v Version) IncrementPostRelease(defaultPostRelease VersionSegment) (Versio
 	return NewVersion(v.Release.Copy(), v.PreRelease.Copy(), newPostRelease)
 }
 
+func (v Version) Empty() bool { return len(v.Segments) == 0 }
+
 func (v Version) String() string { return v.AsString() }
 
 func (v Version) AsString() string {

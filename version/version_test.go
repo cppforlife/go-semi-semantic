@@ -206,6 +206,17 @@ var _ = Describe("Version", func() {
 		})
 	})
 
+	Describe("Empty", func() {
+		It("returns true when version is empty (init-ed as zero value)", func() {
+			Expect(Version{}.Empty()).To(BeTrue())
+		})
+
+		It("returns false when version is not empty", func() {
+			Expect(MustNewVersionFromString("1").Empty()).To(BeFalse())
+			Expect(MustNewVersionFromString("1-1+1").Empty()).To(BeFalse())
+		})
+	})
+
 	Describe("AsString", func() {
 		It("joins the version clusters with separators", func() {
 			release := MustNewVersionSegmentFromString("1.1.1.1")
