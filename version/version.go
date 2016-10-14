@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	versionRegexp = matchingRegexp{regexp.MustCompile(`\A(?P<release>[0-9A-Za-z_\.]+)(\-(?P<pre_release>[0-9A-Za-z_\-\.]+))?(\+(?P<post_release>[0-9A-Za-z_\-\.]+))?\z`)}
+	versionRegexp = matchingRegexp{regexp.MustCompile(`\A(?P<release>[0-9A-Za-z_\.]*[0-9_\.]+[0-9A-Za-z_\.]*)(\-(?P<pre_release>[0-9A-Za-z_\-\.]+))?(\+(?P<post_release>[0-9A-Za-z_\-\.]+))?\z`)}
 )
 
 type matchingRegexp struct {
